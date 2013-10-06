@@ -1,0 +1,5 @@
+srcIp
+dstIP
+sessionTimeOut
+beginTime
+endTime
