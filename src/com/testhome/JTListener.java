@@ -26,9 +26,14 @@ import org.jnetpcap.protocol.voip.Sip;
 
 public class JTListener {
     private JTextPane textPane1;
-    private JTextArea textArea1;
-    private JButton startButton;
-    private JButton stopButton;
+    private  JTextArea textArea1;
+    private  JButton startButton;
+    private  JButton stopButton;
+
+    public JTextPane getTextPane1() {
+        return textPane1;
+    }
+
     private JPanel windField;
     private JButton initButton;
     public volatile Boolean stop = false;
@@ -54,7 +59,7 @@ public class JTListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int r = Pcap.findAllDevs(alldevs, errbuf);
-                dumper = new Dumper(2,1,alldevs);
+                dumper = new Dumper(2,1,alldevs,textPane1);
                 if (r == Pcap.NOT_OK || alldevs.isEmpty()) {
                     // System.err.printf("Can't read list of devices, error is %s", errbuf.toString());
                     textArea1.append("Can't read list of devices, error is " + errbuf.toString()+"\n");
@@ -69,6 +74,7 @@ public class JTListener {
                                     : "No description available";
                     //System.out.printf("#%d: %s [%s]\n", i++, device.getName(), description);
                     textPane1.setText(textPane1.getText() + (i++) + " : "+ device.getDescription() + " > " + description + "\n");
+                    textPane1.setCaretPosition(textPane1.getDocument().getLength());
 //                    list1.add(device.getName());
                 }
 
