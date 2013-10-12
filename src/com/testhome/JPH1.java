@@ -30,23 +30,31 @@ public class JPH1 implements JPacketHandler<StringBuilder> {
         String source = "";
         String destination = "";
         String printResult = "";
-        packet.getHeader(ipv4);
-        if (!(ipv4.source()).equals(null)){
-            source = FormatUtils.ip(ipv4.source());
-        }
-        if  (!(ipv4.destination()).equals(null)){
-            destination = FormatUtils.ip(ipv4.destination());
-        }
+
         try {
+            packet.getHeader(ipv4);
+            if (!(ipv4.source()).equals(null)){
+                source = FormatUtils.ip(ipv4.source());
+            }
+            if  (!(ipv4.destination()).equals(null)){
+                destination = FormatUtils.ip(ipv4.destination());
+            }
             //textPane1.setText(textPane1.getText() + "> Source ip = " + source + ";  Destination ip = " + destination + "\n");
             printResult = "> Source ip = " + source + ";  Destination ip = " + destination + "\n";
         }
         catch (Exception e){
-            printResult = printResult + "!!! Exception ip IP Addr" + e.getCause() + "\n";
+            printResult = printResult + "!!! Exception ip IP Addr > " + e.getCause() + "\n";
             textPane1.setText(textPane1.getText() + printResult);
             textPane1.setCaretPosition(textPane1.getDocument().getLength());
         }
         //System.out.println("From " + source + " To " + destination);
+
+        if (packet.hasHeader(Sip.ID)) {
+            packet.getHeader(sip1);
+            printResult = printResult + "> sip1.getMethod().name() = " + sip1.getMethod().name() + "\n";
+//            textPane1.setText(textPane1.getText() + "> rtp1.csrcLength() = " + rtp1.csrcLength() + ";  rtp1.csrc() = " + rtp1.csrc() + "; rtp1.ssrc()" + rtp1.ssrc() + "\n");
+//            System.out.printf("rtp1.csrcLength() = " + rtp1.csrcLength() + ";  rtp1.csrc() = " + rtp1.csrc() + "; rtp1.ssrc()" + rtp1.ssrc());
+        }
 
         if (packet.hasHeader(Rtp.ID)) {
             packet.getHeader(rtp1);
@@ -55,19 +63,16 @@ public class JPH1 implements JPacketHandler<StringBuilder> {
 //            System.out.printf("rtp1.csrcLength() = " + rtp1.csrcLength() + ";  rtp1.csrc() = " + rtp1.csrc() + "; rtp1.ssrc()" + rtp1.ssrc());
         }
 
-
+/*
         if (packet.hasHeader(Tcp.ID)) {
             packet.getHeader(tcp);
             printResult = printResult + "> tcp.dst_port = " + tcp.destination() + "; tcp.src_port = " + tcp.source() + "; tcp.ack = " + tcp.ack()  + "\n";
-//            textPane1.setText(textPane1.getText() + "> tcp.dst_port = " + tcp.destination() + "; tcp.src_port = " + tcp.source() + "; tcp.ack = " + tcp.ack()  + "\n");
-//            System.out.printf("tcp.dst_port = " + tcp.destination() + "; tcp.src_port = " + tcp.source() + "; tcp.ack= " + tcp.ack());
         }
         if (packet.hasHeader(Udp.ID)) {
             packet.getHeader(udp1);
             printResult = printResult + "> udp.dst_port = " + udp1.destination() + "; udp.src_port = " + udp1.source()  + "\n";
-//            textPane1.setText(textPane1.getText() + "> udp.dst_port = " + udp1.destination() + "; udp.src_port = " + udp1.source()  + "\n");
-//            System.out.printf("udp.dst_port = ", udp1.destination() + "; udp.src_port=%d%n", udp1.source());
         }
+*/
         textPane1.setText(textPane1.getText() + printResult + "Frame " + packet.getFrameNumber() + " \n" );
         textPane1.setCaretPosition(textPane1.getDocument().getLength());
         //System.out.printf("frame #%d%n", packet.getFrameNumber());
