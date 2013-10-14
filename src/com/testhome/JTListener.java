@@ -25,20 +25,22 @@ import org.jnetpcap.protocol.tcpip.Udp;
 import org.jnetpcap.protocol.voip.Sip;
 
 public class JTListener {
-    private JTextPane textPane1;
+//    private JTextPane textPane1;
+    private JTextArea textPane1;
     private  JTextArea textArea1;
     private  JButton startButton;
     private  JButton stopButton;
 
-    public JTextPane getTextPane1() {
-        return textPane1;
+    public JTextArea getTextPane1() {
+        return textArea2;
     }
 
     private JPanel windField;
     private JButton initButton;
+    private JTextArea textArea2;
     public volatile Boolean stop = false;
     final StringBuilder errbuf = new StringBuilder();
-        List<PcapIf> alldevs = new ArrayList<PcapIf>(); // Will be filled with NICs
+    List<PcapIf> alldevs = new ArrayList<PcapIf>(); // Will be filled with NICs
 
     Dumper dumper = null;
 
@@ -58,25 +60,32 @@ public class JTListener {
         initButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int r = Pcap.findAllDevs(alldevs, errbuf);
-                dumper = new Dumper(2,1,alldevs,textPane1);
-                if (r == Pcap.NOT_OK || alldevs.isEmpty()) {
-                    // System.err.printf("Can't read list of devices, error is %s", errbuf.toString());
-                    textArea1.append("Can't read list of devices, error is " + errbuf.toString()+"\n");
-                    return;
-                }
-                textPane1.setText("Network devices found: \n");
+                int r;
+                try {
+                    r = Pcap.findAllDevs(alldevs, errbuf);
+                    if (r == Pcap.NOT_OK || alldevs.isEmpty()) {
+                        System.err.printf("Can't read list of devices, error is %s", errbuf.toString());
+                        textArea1.append("Can't read list of devices, error is " + errbuf.toString()+"\n");
+                        return;
+                    }
 
-                int i = 0;
+                }
+                catch (Exception ee){
+                    System.out.println(ee.toString());
+                }
+
+                textArea2.append("Network devices found: \n");
+                                int i = 0;
                 for (PcapIf device : alldevs) {
                     String description =
                             (device.getDescription() != null) ? device.getDescription()
                                     : "No description available";
                     //System.out.printf("#%d: %s [%s]\n", i++, device.getName(), description);
-                    textPane1.setText(textPane1.getText() + (i++) + " : "+ device.getDescription() + " > " + description + "\n");
-                    textPane1.setCaretPosition(textPane1.getDocument().getLength());
+                    textArea2.append((i++) + " : "+ device.getDescription() + " > " + description + "\n");
+                    //textPane1.setCaretPosition(textPane1.getDocument().getLength());
 //                    list1.add(device.getName());
                 }
+                dumper = new Dumper(0,1,alldevs,textArea2);
 
             }
         });
